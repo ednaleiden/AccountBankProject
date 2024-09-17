@@ -9,6 +9,7 @@ import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.repository.ClienteRepository;
 import com.banca.digital.banca_digital.repository.CuentaBancariaRepository;
 import com.banca.digital.banca_digital.repository.OperacionCuentaRepository;
+import com.banca.digital.banca_digital.services.BancoServices;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +25,15 @@ public class BancaDigitalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BancaDigitalApplication.class, args);
 	}
+
 	@Bean
+	CommandLineRunner commandLineRunner(BancoServices bancoServices){
+		return args -> {
+			bancoServices.consultar();
+		};
+	}
+
+	//@Bean
 	CommandLineRunner start(ClienteRepository clienteRepository, CuentaBancariaRepository cuentaBancariaRepository, OperacionCuentaRepository operacionCuentaRepository){
 		return  args -> {
 			Stream.of("Edna","Leiden","Oliver","Dupont").forEach(nombre ->{

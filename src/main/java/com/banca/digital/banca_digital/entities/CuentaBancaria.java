@@ -31,6 +31,6 @@ public class CuentaBancaria {
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "cuentaBancaria")
+    @OneToMany(mappedBy = "cuentaBancaria", fetch = FetchType.LAZY) //FetchType.LAZY SOLO APARECE CUANDO LA LLAME
     private List<OperacionCuenta> operacionCuentas;
 }
