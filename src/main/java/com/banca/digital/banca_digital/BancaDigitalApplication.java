@@ -3,7 +3,9 @@ package com.banca.digital.banca_digital;
 import com.banca.digital.banca_digital.entities.Cliente;
 import com.banca.digital.banca_digital.entities.CuentaActual;
 import com.banca.digital.banca_digital.entities.CuentaAhorro;
+import com.banca.digital.banca_digital.entities.OperacionCuenta;
 import com.banca.digital.banca_digital.enums.EstadoCuenta;
+import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.repository.ClienteRepository;
 import com.banca.digital.banca_digital.repository.CuentaBancariaRepository;
 import com.banca.digital.banca_digital.repository.OperacionCuentaRepository;
@@ -57,7 +59,12 @@ public class BancaDigitalApplication {
 			//agregamos operaciones
 			cuentaBancariaRepository.findAll().forEach(cuentaBancaria -> {
 				for (int i = 0; i < 10;i++) {
-
+					OperacionCuenta operacionCuenta = new OperacionCuenta();
+					operacionCuenta.setFechaOperacion(new Date());
+					operacionCuenta.setMonto(Math.random() * 1200);
+					operacionCuenta.setTipoOperacion(Math.random() > 0.5 ? TipoOperacion.DEBITO : TipoOperacion.CREDITO);
+					operacionCuenta.setCuentaBancaria(cuentaBancaria);
+					operacionCuentaRepository.save(operacionCuenta);
 				}
 			});
 		};
