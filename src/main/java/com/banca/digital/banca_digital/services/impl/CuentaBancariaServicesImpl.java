@@ -124,12 +124,14 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     }
 
     @Override
-    public void transfer(String cuentaIdPropietario, String cuentaIdDestinatario, double monto) throws CuentaBancariaNotFoundException {
+    public void transfer(String cuentaIdPropietario, String cuentaIdDestinatario, double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
         debit(cuentaIdPropietario,monto,"Transferencia a :" + cuentaIdDestinatario);
+        credit(cuentaIdDestinatario,monto,"Transferencia de :" + cuentaIdPropietario);
     }
 
     @Override
     public List<CuentaBancaria> listCuentaBancaria() {
-        return null;
+
+        return cuentaBancariaRepository.findAll();
     }
 }

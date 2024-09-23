@@ -28,7 +28,7 @@ public interface CuentaBancariaServices {
 
     void credit(String cuentaId,double monto,String descripcion)throws CuentaBancariaNotFoundException;
 
-    void transfer(String cuentaIdPropietario, String cuentaIdDestinatario , double monto) throws CuentaBancariaNotFoundException;
+    void transfer(String cuentaIdPropietario, String cuentaIdDestinatario , double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
 
     List<CuentaBancaria> listCuentaBancaria();
 }
