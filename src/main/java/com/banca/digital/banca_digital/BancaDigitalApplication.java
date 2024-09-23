@@ -1,9 +1,6 @@
 package com.banca.digital.banca_digital;
 
-import com.banca.digital.banca_digital.entities.Cliente;
-import com.banca.digital.banca_digital.entities.CuentaActual;
-import com.banca.digital.banca_digital.entities.CuentaAhorro;
-import com.banca.digital.banca_digital.entities.OperacionCuenta;
+import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.EstadoCuenta;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.exceptions.ClienteNotFoundException;
@@ -18,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -47,7 +45,17 @@ public class BancaDigitalApplication {
 			});
 			cuentaBancariaServices.listClientes().forEach(cliente -> {
 				try {
-					cuentaBancariaServices.saveCuentaBancariaActual(Math.random() * 90000,9000, cliente.getId())
+					cuentaBancariaServices.saveCuentaBancariaActual(Math.random() * 90000,9000, cliente.getId());
+					cuentaBancariaServices.saveCuentaBancariaAhorro(120000,5.5, cliente.getId());
+
+					List<CuentaBancaria> cuentaBancarias = cuentaBancariaServices.listCuentaBancaria();
+
+					for (CuentaBancaria cuentaBancaria : cuentaBancarias){
+						for (int i = 0; i<10; i ++){
+							cuentaBancariaServices.credit(cuentaBancaria.getId(), 10000*Math.random()*120000,"credito");
+							cuentaBancariaServices.debit(cuentaBancaria.getId(), 1000*Math.random()*9000,"debito");
+						}
+					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
