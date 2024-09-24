@@ -1,5 +1,6 @@
 package com.banca.digital.banca_digital;
 
+import com.banca.digital.banca_digital.DTO.ClienteDTO;
 import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.EstadoCuenta;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
@@ -37,9 +38,9 @@ public class BancaDigitalApplication {
 	CommandLineRunner start(CuentaBancariaServices cuentaBancariaServices){
 		return  args -> {
 			Stream.of("Edna", "Leiden", "Oliver", "Dupont").forEach(nombre -> {
-				Cliente cliente = new Cliente();
+				ClienteDTO cliente = new ClienteDTO();
 				cliente.setNombre(nombre);
-				cliente.setEmail(nombre + "@gmail.com");
+				//cliente.setEmail(nombre + "@gmail.com");
 				cuentaBancariaServices.saveCliente(cliente);
 
 			});

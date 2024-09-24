@@ -2,11 +2,10 @@ package com.banca.digital.banca_digital.web;
 
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
 import com.banca.digital.banca_digital.entities.Cliente;
+import com.banca.digital.banca_digital.exceptions.ClienteNotFoundException;
 import com.banca.digital.banca_digital.services.CuentaBancariaServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +20,15 @@ public class ClienteController {
     public List<ClienteDTO> listarClientes(){
         return cuentaBancariaServices.listClientes();
 
+    }
+
+    @GetMapping("/cliente/{id}")
+    public ClienteDTO listarDatosDelCliente(@PathVariable(name = "id") Long clienteId) throws ClienteNotFoundException{
+    return cuentaBancariaServices.getCliente(clienteId);
+    }
+
+    @PostMapping("/clientes")
+    public ClienteDTO guardarCliente(@RequestBody ClienteDTO clienteDTO){
+        return cuentaBancariaServices.saveCliente(clienteDTO);
     }
 }
