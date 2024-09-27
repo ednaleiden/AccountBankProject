@@ -37,7 +37,7 @@ public class BancaDigitalApplication {
 		};
 	}
 
-	@Bean
+	//@Bean
 	CommandLineRunner start(CuentaBancariaServices cuentaBancariaServices){
 		return  args -> {
 			Stream.of("Edna", "Leiden", "Oliver", "Dupont").forEach(nombre -> {

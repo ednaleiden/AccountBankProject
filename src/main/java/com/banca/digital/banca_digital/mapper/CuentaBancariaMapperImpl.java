@@ -34,6 +34,7 @@ public class CuentaBancariaMapperImpl {
         CuentaAhorroDTO cuentaAhorroDTO = new CuentaAhorroDTO();
         BeanUtils.copyProperties(cuentaAhorro, cuentaAhorroDTO);
         cuentaAhorroDTO.setClienteDTO(mapperDeCliente(cuentaAhorro.getCliente()));
+        cuentaAhorroDTO.setTipo(cuentaAhorro.getClass().getSimpleName());
         return cuentaAhorroDTO;
     }
     public CuentaAhorro mapearDeCuentaAhorroDTO(CuentaAhorroDTO cuentaAhorroDTO){
@@ -46,6 +47,7 @@ public class CuentaBancariaMapperImpl {
         CuentaActualDTO cuentaActualDTO = new CuentaActualDTO();
         BeanUtils.copyProperties(cuentaActual, cuentaActualDTO);
         cuentaActualDTO.setClienteDTO(mapperDeCliente(cuentaActual.getCliente()));
+        cuentaActualDTO.setTipo(cuentaActual.getClass().getSimpleName());
         return cuentaActualDTO;
     }
     public CuentaActual mapearDeCuentaActualDTO(CuentaActualDTO cuentaActualDTO){
