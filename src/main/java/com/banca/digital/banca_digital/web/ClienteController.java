@@ -31,4 +31,15 @@ public class ClienteController {
     public ClienteDTO guardarCliente(@RequestBody ClienteDTO clienteDTO){
         return cuentaBancariaServices.saveCliente(clienteDTO);
     }
+
+    @PutMapping("/clientes/{clienteId}")
+    public ClienteDTO actualizarCliente(@PathVariable Long clieteId,@RequestBody ClienteDTO clienteDTO){
+    clienteDTO.setId(clieteId);
+    return  cuentaBancariaServices.updateCliente(clienteDTO);
+    }
+
+    @DeleteMapping("/clientes/{id}")
+    public void eliminarCliente(@PathVariable Long id){
+        cuentaBancariaServices.deleteCliente(id);
+    }
 }

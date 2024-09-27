@@ -1,6 +1,7 @@
 package com.banca.digital.banca_digital.services.impl;
 
 
+import ch.qos.logback.core.net.server.Client;
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
 import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
@@ -52,6 +53,19 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     public ClienteDTO getCliente(Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado"));
         return cuentaBancariaMapper.mapperDeCliente(cliente);
+    }
+
+    @Override
+    public ClienteDTO updateCliente(ClienteDTO clienteDTO) {
+        log.info("Actualizando cliente");
+        Cliente cliente = cuentaBancariaMapper.mapperDeClienteDTO(clienteDTO);
+        Cliente clienteBBDD = clienteRepository.save(cliente);
+        return  cuentaBancariaMapper.mapperDeCliente(clienteBBDD);
+    }
+
+    @Override
+    public void deleteCliente(Long clienteId) {
+        clienteRepository.deleteById(clienteId);
     }
 
     @Override

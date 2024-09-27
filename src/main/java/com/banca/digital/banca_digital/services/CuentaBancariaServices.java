@@ -17,6 +17,9 @@ public interface CuentaBancariaServices {
 
     ClienteDTO getCliente(Long clienteId) throws  ClienteNotFoundException;
 
+    ClienteDTO updateCliente(ClienteDTO clienteDTO);
+
+    void deleteCliente(Long clienteId);
 
     CuentaActual saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException;
 
