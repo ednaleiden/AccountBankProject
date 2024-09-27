@@ -33,8 +33,8 @@ public class ClienteController {
     }
 
     @PutMapping("/clientes/{clienteId}")
-    public ClienteDTO actualizarCliente(@PathVariable Long clieteId,@RequestBody ClienteDTO clienteDTO){
-    clienteDTO.setId(clieteId);
+        public ClienteDTO actualizarCliente(@PathVariable Long clienteId,@RequestBody ClienteDTO clienteDTO){
+    clienteDTO.setId(clienteId);
     return  cuentaBancariaServices.updateCliente(clienteDTO);
     }
 

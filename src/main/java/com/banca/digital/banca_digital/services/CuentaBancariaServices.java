@@ -1,6 +1,8 @@
 package com.banca.digital.banca_digital.services;
 
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
+import com.banca.digital.banca_digital.DTO.CuentaActualDTO;
+import com.banca.digital.banca_digital.DTO.CuentaAhorroDTO;
 import com.banca.digital.banca_digital.entities.Cliente;
 import com.banca.digital.banca_digital.entities.CuentaActual;
 import com.banca.digital.banca_digital.entities.CuentaAhorro;
@@ -21,9 +23,9 @@ public interface CuentaBancariaServices {
 
     void deleteCliente(Long clienteId);
 
-    CuentaActual saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException;
+    CuentaActualDTO saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException;
 
-    CuentaAhorro saveCuentaBancariaAhorro(double balanceInicial, double tasaInteres, Long clienteId) throws ClienteNotFoundException;
+    CuentaAhorroDTO saveCuentaBancariaAhorro(double balanceInicial, double tasaInteres, Long clienteId) throws ClienteNotFoundException;
 
     List<ClienteDTO> listClientes();
 

@@ -3,6 +3,8 @@ package com.banca.digital.banca_digital.services.impl;
 
 import ch.qos.logback.core.net.server.Client;
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
+import com.banca.digital.banca_digital.DTO.CuentaActualDTO;
+import com.banca.digital.banca_digital.DTO.CuentaAhorroDTO;
 import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.exceptions.BalanceInsuficienteException;
@@ -69,7 +71,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     }
 
     @Override
-    public CuentaActual saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException {
+    public CuentaActualDTO saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
         if (cliente == null){
             throw new ClienteNotFoundException("Cliente no encontrado");
@@ -83,11 +85,11 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
         cuentaActual.setCliente(cliente);
 
         CuentaActual cuentaActualBBDD = cuentaBancariaRepository.save(cuentaActual);
-        return cuentaActualBBDD;
+        return cuentaBancariaMapper.mapearDeCuentaActual(cuentaActualBBDD);
     }
 
     @Override
-    public CuentaAhorro saveCuentaBancariaAhorro(double balanceInicial, double tasaInteres, Long clienteId) throws ClienteNotFoundException {
+    public CuentaAhorroDTO saveCuentaBancariaAhorro(double balanceInicial, double tasaInteres, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
         if (cliente == null){
             throw new ClienteNotFoundException("Cliente no encontrado");
@@ -101,7 +103,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
         cuentaAhorro.setCliente(cliente);
 
         CuentaAhorro cuentaAhorroBBDD = cuentaBancariaRepository.save(cuentaAhorro);
-        return cuentaAhorroBBDD;
+        return cuentaBancariaMapper.mapearDeCuentaAhorro(cuentaAhorroBBDD);
     }
 
     @Override
