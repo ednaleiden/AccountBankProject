@@ -5,6 +5,7 @@ import ch.qos.logback.core.net.server.Client;
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
 import com.banca.digital.banca_digital.DTO.CuentaActualDTO;
 import com.banca.digital.banca_digital.DTO.CuentaAhorroDTO;
+import com.banca.digital.banca_digital.DTO.CuentaBancariaDTO;
 import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.exceptions.BalanceInsuficienteException;
@@ -45,9 +46,9 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
 
     @Override
     public ClienteDTO saveCliente(ClienteDTO clienteDTO) {
-       log.info("Guardando un nuevo cliente");
-       Cliente cliente = cuentaBancariaMapper.mapperDeClienteDTO(clienteDTO);
-       Cliente clienteBBDD = clienteRepository.save(cliente);
+        log.info("Guardando un nuevo cliente");
+        Cliente cliente = cuentaBancariaMapper.mapperDeClienteDTO(clienteDTO);
+        Cliente clienteBBDD = clienteRepository.save(cliente);
         return cuentaBancariaMapper.mapperDeCliente(clienteBBDD);
     }
 
@@ -62,7 +63,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
         log.info("Actualizando cliente");
         Cliente cliente = cuentaBancariaMapper.mapperDeClienteDTO(clienteDTO);
         Cliente clienteBBDD = clienteRepository.save(cliente);
-        return  cuentaBancariaMapper.mapperDeCliente(clienteBBDD);
+        return cuentaBancariaMapper.mapperDeCliente(clienteBBDD);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     @Override
     public CuentaActualDTO saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
-        if (cliente == null){
+        if (cliente == null) {
             throw new ClienteNotFoundException("Cliente no encontrado");
         }
 
@@ -91,7 +92,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     @Override
     public CuentaAhorroDTO saveCuentaBancariaAhorro(double balanceInicial, double tasaInteres, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
-        if (cliente == null){
+        if (cliente == null) {
             throw new ClienteNotFoundException("Cliente no encontrado");
         }
 
@@ -108,23 +109,31 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
 
     @Override
     public List<ClienteDTO> listClientes() {
-       List<Cliente> clientes  = clienteRepository.findAll();
-       List<ClienteDTO> clienteDTOS = clientes.stream()
-               .map(cliente -> cuentaBancariaMapper.mapperDeCliente(cliente))
-               .collect(Collectors.toList());
-       return clienteDTOS;
+        List<Cliente> clientes = clienteRepository.findAll();
+        List<ClienteDTO> clienteDTOS = clientes.stream()
+                .map(cliente -> cuentaBancariaMapper.mapperDeCliente(cliente))
+                .collect(Collectors.toList());
+        return clienteDTOS;
     }
 
     @Override
-    public CuentaBancaria getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException {
+    public CuentaBancariaDTO getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException {
         CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
                 .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta bancaria no encontrada"));
-        return cuentaBancaria;
+
+        if (cuentaBancaria instanceof CuentaAhorro) {
+            CuentaAhorro cuentaAhorro = (CuentaAhorro) cuentaBancaria;
+            return cuentaBancariaMapper.mapearDeCuentaAhorro(cuentaAhorro);
+        } else {
+            CuentaActual cuentaActual = (CuentaActual) cuentaBancaria;
+            return cuentaBancariaMapper.mapearDeCuentaActual(cuentaActual);
+        }
     }
 
     @Override
     public void debit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
-        CuentaBancaria cuentaBancaria = getCuentaBancaria(cuentaId);
+        CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
+                .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta bancaria no encontrada"));
 
         if (cuentaBancaria.getBalance() < monto) {
             throw new BalanceInsuficienteException("Balance insuficiente");
@@ -139,12 +148,12 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
         operacionCuentaRepository.save(operacionCuenta);
         cuentaBancaria.setBalance(cuentaBancaria.getBalance() - monto);
         cuentaBancariaRepository.save(cuentaBancaria);
-     }
+    }
 
     @Override
     public void credit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException {
-        CuentaBancaria cuentaBancaria = getCuentaBancaria(cuentaId);
-
+        CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
+                .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta bancaria no encontrada"));
 
         OperacionCuenta operacionCuenta = new OperacionCuenta();
         operacionCuenta.setTipoOperacion(TipoOperacion.CREDITO);
@@ -159,13 +168,24 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
 
     @Override
     public void transfer(String cuentaIdPropietario, String cuentaIdDestinatario, double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
-        debit(cuentaIdPropietario,monto,"Transferencia a :" + cuentaIdDestinatario);
-        credit(cuentaIdDestinatario,monto,"Transferencia de :" + cuentaIdPropietario);
+        debit(cuentaIdPropietario, monto, "Transferencia a :" + cuentaIdDestinatario);
+        credit(cuentaIdDestinatario, monto, "Transferencia de :" + cuentaIdPropietario);
     }
 
     @Override
-    public List<CuentaBancaria> listCuentaBancaria() {
+    public List<CuentaBancariaDTO> listCuentaBancaria() {
 
-        return cuentaBancariaRepository.findAll();
+        List<CuentaBancaria> cuentaBancarias = cuentaBancariaRepository.findAll();
+        List<CuentaBancariaDTO> cuentaBancariaDTOS = cuentaBancarias.stream().map(cuentaBancaria -> {
+            if (cuentaBancaria instanceof CuentaAhorro) {
+                CuentaAhorro cuentaAhorro = (CuentaAhorro) cuentaBancaria;
+                return cuentaBancariaMapper.mapearDeCuentaAhorro(cuentaAhorro);
+            }else {
+                CuentaActual cuentaActual = (CuentaActual) cuentaBancaria;
+                return cuentaBancariaMapper.mapearDeCuentaActual(cuentaActual);
+            }
+
+        }).collect(Collectors.toList());
+        return cuentaBancariaDTOS;
     }
 }

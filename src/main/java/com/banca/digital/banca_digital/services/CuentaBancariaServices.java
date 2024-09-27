@@ -3,6 +3,7 @@ package com.banca.digital.banca_digital.services;
 import com.banca.digital.banca_digital.DTO.ClienteDTO;
 import com.banca.digital.banca_digital.DTO.CuentaActualDTO;
 import com.banca.digital.banca_digital.DTO.CuentaAhorroDTO;
+import com.banca.digital.banca_digital.DTO.CuentaBancariaDTO;
 import com.banca.digital.banca_digital.entities.Cliente;
 import com.banca.digital.banca_digital.entities.CuentaActual;
 import com.banca.digital.banca_digital.entities.CuentaAhorro;
@@ -29,7 +30,7 @@ public interface CuentaBancariaServices {
 
     List<ClienteDTO> listClientes();
 
-    CuentaBancaria getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException;
+    CuentaBancariaDTO getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException;
 
     void debit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
 
@@ -37,5 +38,5 @@ public interface CuentaBancariaServices {
 
     void transfer(String cuentaIdPropietario, String cuentaIdDestinatario , double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
 
-    List<CuentaBancaria> listCuentaBancaria();
+    List<CuentaBancariaDTO> listCuentaBancaria();
 }
