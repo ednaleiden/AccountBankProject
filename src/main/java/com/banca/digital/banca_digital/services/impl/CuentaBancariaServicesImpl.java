@@ -2,10 +2,7 @@ package com.banca.digital.banca_digital.services.impl;
 
 
 import ch.qos.logback.core.net.server.Client;
-import com.banca.digital.banca_digital.DTO.ClienteDTO;
-import com.banca.digital.banca_digital.DTO.CuentaActualDTO;
-import com.banca.digital.banca_digital.DTO.CuentaAhorroDTO;
-import com.banca.digital.banca_digital.DTO.CuentaBancariaDTO;
+import com.banca.digital.banca_digital.DTO.*;
 import com.banca.digital.banca_digital.entities.*;
 import com.banca.digital.banca_digital.enums.TipoOperacion;
 import com.banca.digital.banca_digital.exceptions.BalanceInsuficienteException;
@@ -187,5 +184,13 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
 
         }).collect(Collectors.toList());
         return cuentaBancariaDTOS;
+    }
+
+    @Override
+    public List<OperacionCuentaDTO> listHistorialDeCuentas(String cuentaId) {
+        List<OperacionCuenta> operacionesDeCuentas = operacionCuentaRepository.findByCuentaBancariaId(cuentaId);
+        return operacionesDeCuentas.stream().map(operacionCuenta ->
+            cuentaBancariaMapper.maperarDeOperacionCuenta(operacionCuenta)
+        ).collect(Collectors.toList());
     }
 }
