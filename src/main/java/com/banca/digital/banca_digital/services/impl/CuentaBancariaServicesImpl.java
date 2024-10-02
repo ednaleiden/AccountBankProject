@@ -66,6 +66,13 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
     }
 
     @Override
+    public List<ClienteDTO> searchClientes(String keyword) {
+        List<Cliente> clientes = clienteRepository.searchClientes(keyword);
+        List<ClienteDTO> clienteDTOS = clientes.stream().map(cliente -> cuentaBancariaMapper.mapperDeCliente(cliente)).collect(Collectors.toList());
+        return clienteDTOS;
+    }
+
+    @Override
     public void deleteCliente(Long clienteId) {
         clienteRepository.deleteById(clienteId);
     }
