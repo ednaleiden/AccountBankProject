@@ -210,7 +210,7 @@ public class CuentaBancariaServicesImpl implements CuentaBancariaServices {
             throw new CuentaBancariaNotFoundException("cuenta no encontrada");
         }
 
-        Page<OperacionCuenta> operacionCuenta = operacionCuentaRepository.findByCuentaBancariaId(cuentaId, PageRequest.of(page,size));
+        Page<OperacionCuenta> operacionCuenta = operacionCuentaRepository.findByCuentaBancariaIdOrderByFechaOperacionDesc(cuentaId, PageRequest.of(page,size));
         HistorialCuentaDTO historialCuentaDTO = new HistorialCuentaDTO();
         List<OperacionCuentaDTO> operacionCuentaDTOS = operacionCuenta.getContent().stream().map(operacionCuenta1 -> cuentaBancariaMapper.maperarDeOperacionCuenta(operacionCuenta1)).collect(Collectors.toList());
         historialCuentaDTO.setOperacionCuentaDTOS(operacionCuentaDTOS);
